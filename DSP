@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class graph{
+    int N,INF=INT_MAX;
+    vector< vector< pair<int,int> > > adj;
+    public:
+        graph(int n){ adj.resize(n);N=n;}
+
+        vector<int> SP(int src){        // shortest Path method argument : source 
+            vector<int> dist(N,INF);
+            set<pair<int,int>> H;
+            H.insert({0, src});
+            dist[src]=0;
+            while( !H.empty() ){
+                auto v= H.begin()->second, distov=H.begin()->first;
+                H.erase(H.begin());
+                for(auto w: adj[v]){
+                    int u= w.first, uvlen= w.second;
+                    if(dist[u] > dist[v] + uvlen){
+                        if(dist[u] != INF) H.erase( H.find({dist[u],u}) );
+                        dist[u] = dist[v] + uvlen;
+                        H.insert({dist[u],u});
+                    }
+                }
+            }
+            return dist;
+        }
+
+        void addEdge(int v,int w,int cst){adj[v].push_back({w,cst}),adj[w].push_back({v,cst});} // addEdge Method
+};
