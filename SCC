@@ -26,8 +26,8 @@ class graph{
     }
     vector<int> getSCC(){
         for(int v=0;v<V;v++)         if(!marked[v])            dfs1(v);
-        for(auto i= postOrd.rbegin();i != postOrd.rend();i++) cout<<*i<<" ";
         for(int v=V-1,id=0;v>=0;v--) if(SCC[postOrd[v]] == -1) dfs2(postOrd[v],id++);
+        postOrd.clear();
         return SCC;
     }
 };
