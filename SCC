@@ -1,0 +1,44 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class graph{
+    int V;
+    vector< vector<int> > adj,adjRev;
+    vector<bool> marked;
+    vector<int>postOrd,SCC;
+    public:
+    graph(int v){
+        V=v;
+        adj.resize(V);
+        adjRev.resize(V);
+        SCC.resize(V,-1);
+        marked.resize(V,false);
+    }
+    void addEdge(int p, int q){ adj[p].push_back(q);adjRev[q].push_back(p);}
+    void dfs1(int v){
+        marked[v]=true;
+        for(int w: adjRev[v]) if(!marked[w]) dfs1(w);
+        postOrd.push_back(v);
+    }    
+    void dfs2(int v,int id){
+        SCC[v]=id;
+        for(int w:adj[v]) if(SCC[w] == -1) dfs2(w,id);
+    }
+    vector<int> getSCC(){
+        for(int v=0;v<V;v++)         if(!marked[v])            dfs1(v);
+        for(auto i= postOrd.rbegin();i != postOrd.rend();i++) cout<<*i<<" ";
+        for(int v=V-1,id=0;v>=0;v--) if(SCC[postOrd[v]] == -1) dfs2(postOrd[v],id++);
+        return SCC;
+    }
+};
+int main(){
+    graph g(5);
+    g.addEdge(0,2);
+    g.addEdge(2,0);
+    g.addEdge(0,1);
+    g.addEdge(2,3);
+    g.addEdge(3,2);
+    g.addEdge(3,4);
+    vector<int> SCC=g.getSCC();
+    for(int i=0;i<5;i++) cout<<" "<<SCC[i];
+}
