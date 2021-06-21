@@ -1,0 +1,28 @@
+class graph{
+	public:
+	int V;
+	vector< vector<int> > adj,adjR;
+	vector<bool> marked;
+	vector<int> ts;
+	graph(int v){
+		V=v;
+		adj.resize(V);
+		adjR.resize(V);
+	}
+	void addedge(int v,int w){ adj[v].push_back(w);adjR[w].push_back(v);}
+	void dfs(int v){
+		marked[v]=true;
+		for(int w: adjR[v]){
+			if(!marked[w]) dfs(w);
+		}
+		ts.push_back(v);
+	}	
+	vector<int> TS(){
+		if( ts.size() > 0 ) return ts;
+		marked.resize(V,false);
+		for(int v=0; v<V; v++){
+			if(!marked[v]) dfs(v);
+		}
+		return ts;
+	}
+};
