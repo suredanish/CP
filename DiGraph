@@ -1,0 +1,45 @@
+typedef struct edge{int id,to,val;} edge;
+class graph{
+	public:
+	int V,SCCcount;
+	vector<vector<edge>> adj,radj;
+       	vector<int> ts, id;
+
+	graph (int VV) { V=VV; adj.resize(V); radj.resize(V); }
+
+	void addEdge(int id,int v,int u,int val)
+		{ adj[v].push_back({id,u,val}); radj[u].push_back({id,v,val});}
+
+	int size(){return V;}
+
+	void ts_dfs(int v, vector<bool> & used){
+		used[v]=true;
+		for( auto e : adj[v] ) if( !used[e.to] ) ts_dfs(e.to, used);
+		ts.push_back(v);
+	}
+
+	vector<int> topologicalSort(){
+		ts.clear();	
+		vector<bool> used(V,false);
+		for(int v=0; v<V; v++) if( !used[v] ) ts_dfs(v,used);
+		used.clear();
+		reverse(ts.begin(),ts.end());
+		return ts;	
+	}
+
+	void r_dfs(int v){
+		id[v]=SCCcount;
+		for( auto e : radj[v] ) if( id[e.to] == -1 ) r_dfs(e.to);
+	}
+
+	void raju(){
+		SCCcount=0;
+		id.clear();id.resize(V,-1);
+		vector<int> order = topologicalSort();
+
+		for( int v: order)
+			if(id[v] == -1 ){ r_dfs(v); SCCcount++; }
+	}
+	void clear() { adj.clear();radj.clear();id.clear();ts.clear(); V=SCCcount=0;}
+	void resize(int newV) { graph( (int)newV );}
+};
